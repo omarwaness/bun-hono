@@ -1,0 +1,25 @@
+
+### get all authors
+GET http://localhost:3000/authors
+
+### get author by id = 1
+GET http://localhost:3000/authors/1
+
+### create author
+POST http://localhost:3000/authors
+Content-Type: application/json
+
+{
+  "name": "John Doe"
+}
+
+### update author id = 1
+PUT http://localhost:3000/authors/1
+Content-Type: application/json
+
+{
+  "name": "John Doe Updated"
+}
+
+### delete author id = 1
+DELETE http://localhost:3000/authors/1
