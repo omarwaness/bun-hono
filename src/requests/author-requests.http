@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ### update author id = 1
-PUT http://localhost:3000/authors/1
+PUT http://localhost:3000/authors/96400b77-cb2f-4529-b8b4-297ba18b02df
 Content-Type: application/json
 
 {
@@ -22,4 +22,4 @@ Content-Type: application/json
 }
 
 ### delete author id = 1
-DELETE http://localhost:3000/authors/1
+DELETE http://localhost:3000/authors/96400b77-cb2f-4529-b8b4-297ba18b02df
