@@ -1,8 +1,8 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
-export const authorsTable = pgTable("authors", {
+export const AuthorTable = pgTable("authors", {
     id: uuid().primaryKey().defaultRandom(),
     name: text().notNull(),
-    birthdate: timestamp({ withTimezone: true }).notNull(),
+    birthday: timestamp({ withTimezone: true }),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
-});
+})

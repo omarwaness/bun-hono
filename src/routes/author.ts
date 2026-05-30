@@ -3,16 +3,15 @@ import { Hono } from "hono";
 import z from "zod";
 import { sValidator } from "@hono/standard-validator";
 
-import { eq } from "drizzle-orm";
- import { db } from "../db/db";
-import { authorsTable } from "../db/schema";
-
+import { db } from "../db/db";
+import { eq } from "drizzle-orm"
+import { AuthorTable } from "../db/schema"
 
 const app = new Hono();
 
 const createAuthorSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    birthdate: z.coerce.date().optional(),
+    name: z.string().min(1),
+    birthday: z.coerce.date().optional(),
 })
 
 const updateAuthorSchema = z.object({
@@ -21,70 +20,50 @@ const updateAuthorSchema = z.object({
 })
 
 app.get('/', async (c) => {
-    const authors = await db.select().from(authorsTable);
+    const authors = await db.query.AuthorTable.findMany();
     return c.json(authors);
 })
 
 app.get('/:id', async (c) => {
-    const id = c.req.param('id');
-    const [author] = await db
-        .select()
-        .from(authorsTable)
-        .where(eq(authorsTable.id, id))
-        .limit(1);
+    const id = c.req.param("id")
+    const author = await db.query.AuthorTable.findFirst({ where: { id } })
 
-    if (!author) {
-        return c.text('Author not found', 404);
+    if (author == null) {
+        return c.json({ error: "Author not found" }, 404)
     }
 
-    return c.json(author);
+    return c.json(author)
 })
 
 app.post('/', sValidator("json", createAuthorSchema), async (c) => {
-    const data = c.req.valid("json");
+    const data = c.req.valid("json")
+    const [author] = await db.insert(AuthorTable).values(data).returning()
 
-    const [newAuthor] = await db.insert(authorsTable).values({
-        name: data.name,
-        birthdate: data.birthdate ?? new Date(),
-    }).returning();
-
-    return c.json(newAuthor, 201);
+    return c.json(author, 201)
 })
 
 app.put('/:id', sValidator("json", updateAuthorSchema), async (c) => {
-    const id = c.req.param('id');
-    const data = c.req.valid("json");
-
-    const updateData = {
-        ...(data.name !== undefined ? { name: data.name } : {}),
-        ...(data.birthdate !== undefined ? { birthdate: data.birthdate } : {}),
-    };
+    const id = c.req.param("id")
+    const data = c.req.valid("json")
 
     const [author] = await db
-        .update(authorsTable)
-        .set(updateData)
-        .where(eq(authorsTable.id, id))
-        .returning();
+        .update(AuthorTable)
+        .set(data)
+        .where(eq(AuthorTable.id, id))
+        .returning()
 
-    if (!author) {
-        return c.text('Author not found', 404);
+    if (author == null) {
+        return c.json({ error: "Author not found" }, 404)
     }
 
-    return c.json(author);
+    return c.json(author)
 })
 
 app.delete('/:id', async (c) => {
-    const id = c.req.param('id');
-    const [author] = await db
-        .delete(authorsTable)
-        .where(eq(authorsTable.id, id))
-        .returning({ id: authorsTable.id });
+    const id = c.req.param("id")
+    await db.delete(AuthorTable).where(eq(AuthorTable.id, id))
 
-    if (!author) {
-        return c.text('Author not found', 404);
-    }
-
-    return c.body(null, 204);
+    return c.body(null, 204)
 })
 
 export default app;

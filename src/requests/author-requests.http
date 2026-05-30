@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ### update author id = 1
-PUT http://localhost:3000/authors/96400b77-cb2f-4529-b8b4-297ba18b02df
+PUT http://localhost:3000/authors/c6992315-ef12-4ad6-b02b-2b9f290b89c9
 Content-Type: application/json
 
 {
