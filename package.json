@@ -2,7 +2,7 @@
   "name": "hono",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "test": "bun test"
+    "test": "bun test ./src/test/index.test.ts"
   },
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",

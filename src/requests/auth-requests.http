@@ -1,0 +1,44 @@
+### register a user
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+	"email": "jane@example.com",
+	"password": "secret123"
+}
+
+### register duplicate user
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+	"email": "jane@example.com",
+	"password": "secret123"
+}
+
+### register invalid payload
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+	"email": "not-an-email",
+	"password": "123"
+}
+
+### login user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+	"email": "jane@example.com",
+	"password": "secret123"
+}
+
+### login invalid payload
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+	"email": "",
+	"password": ""
+}
