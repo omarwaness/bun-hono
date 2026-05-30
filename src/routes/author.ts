@@ -10,8 +10,8 @@ import { AuthorTable } from "../db/schema"
 const app = new Hono();
 
 const createAuthorSchema = z.object({
-    name: z.string().min(1),
-    birthday: z.coerce.date().optional(),
+    name: z.string().min(1, "Name is required"),
+    birthdate: z.coerce.date(),
 })
 
 const updateAuthorSchema = z.object({

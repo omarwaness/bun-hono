@@ -2,18 +2,19 @@
 ### get all authors
 GET http://localhost:3000/authors
 
-### get author by id = 1
-GET http://localhost:3000/authors/1
+### get author by id
+GET http://localhost:3000/authors/96400b77-cb2f-4529-b8b4-297ba18b02df
 
 ### create author
 POST http://localhost:3000/authors
 Content-Type: application/json
 
 {
-  "name": "John Doe"
+  "name": "John Doe",
+  "birthdate": "1990-01-01T00:00:00.000Z"
 }
 
-### update author id = 1
+### update author by id
 PUT http://localhost:3000/authors/c6992315-ef12-4ad6-b02b-2b9f290b89c9
 Content-Type: application/json
 
@@ -21,5 +22,5 @@ Content-Type: application/json
   "name": "John Doe Updated"
 }
 
-### delete author id = 1
+### delete author by id
 DELETE http://localhost:3000/authors/96400b77-cb2f-4529-b8b4-297ba18b02df
