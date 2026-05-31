@@ -3,6 +3,8 @@ import { beforeEach, jest, mock } from "bun:test";
 export const authorFindManyMock = jest.fn();
 export const authorFindFirstMock = jest.fn();
 export const apiKeyFindManyMock = jest.fn();
+export const bookFindManyMock = jest.fn();
+export const bookFindFirstMock = jest.fn();
 export const userFindFirstMock = jest.fn();
 export const insertReturningMock = jest.fn();
 export const insertValuesMock = jest.fn(() => ({ returning: insertReturningMock }));
@@ -18,6 +20,33 @@ export const hashPasswordMock = jest.fn();
 export const verifyPasswordMock = jest.fn();
 export const signMock = jest.fn();
 
+export const user = {
+    id: "d0e4a9d2-eacf-4437-b48b-6d6296f18eb5",
+    email: "jane@example.com",
+    passwordHash: "hashed-password",
+    role: "user",
+    createdAt: "2026-05-30T00:00:00.000Z",
+};
+
+export const adminUser = {
+    id: "b2ef2bb0-d5c1-4f06-834a-0fd96482d190",
+    email: "admin@example.com",
+    passwordHash: "hashed-admin-password",
+    role: "admin",
+    createdAt: "2026-05-30T00:00:00.000Z",
+};
+
+let jwtAuthUser = user;
+let apiKeyAuthUser = user;
+
+export function setMockJwtUser(nextUser: typeof user) {
+    jwtAuthUser = nextUser;
+}
+
+export function setMockApiKeyUser(nextUser: typeof user) {
+    apiKeyAuthUser = nextUser;
+}
+
 const dbMock = {
     query: {
         AuthorTable: {
@@ -26,6 +55,10 @@ const dbMock = {
         },
         ApiKeyTable: {
             findMany: apiKeyFindManyMock,
+        },
+        BookTable: {
+            findMany: bookFindManyMock,
+            findFirst: bookFindFirstMock,
         },
         UserTable: {
             findFirst: userFindFirstMock,
@@ -55,9 +88,9 @@ mock.module("../middleware/auth", () => ({
         }
 
         c.set("apiKeyUser", {
-            id: user.id,
-            role: user.role,
-            email: user.email,
+            id: apiKeyAuthUser.id,
+            role: apiKeyAuthUser.role,
+            email: apiKeyAuthUser.email,
         });
 
         await next();
@@ -73,8 +106,8 @@ mock.module("hono/jwt", () => ({
         }
 
         c.set("jwtPayload", {
-            sub: user.id,
-            email: user.email,
+            sub: jwtAuthUser.id,
+            email: jwtAuthUser.email,
             exp: Math.floor(Date.now() / 1000) + 300,
         });
 
@@ -94,19 +127,23 @@ export const author = {
     createdAt: "2026-05-30T00:00:00.000Z",
 };
 
-export const user = {
-    id: "d0e4a9d2-eacf-4437-b48b-6d6296f18eb5",
-    email: "jane@example.com",
-    passwordHash: "hashed-password",
-    role: "user",
-    createdAt: "2026-05-30T00:00:00.000Z",
-};
-
 export const apiKey = {
     id: "2ee59820-60f5-4f92-9730-3dd266c2d324",
     name: "Local development",
     keyPrefix: "ak_live_",
     createdAt: "2026-05-30T00:00:00.000Z",
+};
+
+export const book = {
+    id: "fef519bb-df11-4a68-a2c1-42f526651db3",
+    title: "Pride and Prejudice",
+    description: "A classic novel",
+    publishDate: "1813-01-28T00:00:00.000Z",
+    pageCount: 432,
+    authorId: author.id,
+    addedBy: user.id,
+    createdAt: "2026-05-30T00:00:00.000Z",
+    author,
 };
 
 beforeEach(() => {
@@ -115,6 +152,8 @@ beforeEach(() => {
     authorFindManyMock.mockResolvedValue([]);
     authorFindFirstMock.mockResolvedValue(null);
     apiKeyFindManyMock.mockResolvedValue([]);
+    bookFindManyMock.mockResolvedValue([]);
+    bookFindFirstMock.mockResolvedValue(null);
     userFindFirstMock.mockResolvedValue(null);
     insertReturningMock.mockResolvedValue([]);
     updateReturningMock.mockResolvedValue([]);
@@ -127,4 +166,7 @@ beforeEach(() => {
     hashPasswordMock.mockResolvedValue("hashed-password");
     verifyPasswordMock.mockResolvedValue(true);
     signMock.mockResolvedValue("signed-jwt-token");
+    setMockJwtUser(user);
+    setMockApiKeyUser(user);
+    user.role = "user";
 });

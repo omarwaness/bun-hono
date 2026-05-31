@@ -1,0 +1,34 @@
+@apiKey = replace-with-api-key
+
+### get all books
+GET http://localhost:3000/books
+
+### get book by id
+GET http://localhost:3000/books/fef519bb-df11-4a68-a2c1-42f526651db3
+
+### create book
+POST http://localhost:3000/books
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "title": "Pride and Prejudice",
+  "description": "A classic novel",
+  "publishDate": "1813-01-28T00:00:00.000Z",
+  "pageCount": 432,
+  "authorId": "96400b77-cb2f-4529-b8b4-297ba18b02df"
+}
+
+### update book by id
+PUT http://localhost:3000/books/fef519bb-df11-4a68-a2c1-42f526651db3
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "title": "Pride and Prejudice Updated",
+  "pageCount": 450
+}
+
+### delete book by id
+DELETE http://localhost:3000/books/fef519bb-df11-4a68-a2c1-42f526651db3
+X-API-Key: {{apiKey}}
