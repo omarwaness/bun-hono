@@ -1,3 +1,5 @@
+@apiKey = replace-with-api-key
+
 
 ### get all authors
 GET http://localhost:3000/authors
@@ -8,6 +10,7 @@ GET http://localhost:3000/authors/96400b77-cb2f-4529-b8b4-297ba18b02df
 ### create author
 POST http://localhost:3000/authors
 Content-Type: application/json
+X-API-Key: {{apiKey}}
 
 {
   "name": "John Doe",
@@ -17,6 +20,7 @@ Content-Type: application/json
 ### update author by id
 PUT http://localhost:3000/authors/c6992315-ef12-4ad6-b02b-2b9f290b89c9
 Content-Type: application/json
+X-API-Key: {{apiKey}}
 
 {
   "name": "John Doe Updated"
@@ -24,3 +28,4 @@ Content-Type: application/json
 
 ### delete author by id
 DELETE http://localhost:3000/authors/96400b77-cb2f-4529-b8b4-297ba18b02df
+X-API-Key: {{apiKey}}

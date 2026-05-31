@@ -1,0 +1,22 @@
+### replace with a valid JWT token for testing
+@token = replace-with-jwt
+
+### list api keys
+GET http://localhost:3000/api-keys
+Authorization: Bearer {{token}}
+
+### create api key
+POST http://localhost:3000/api-keys
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"name": "Local development"
+}
+
+### delete api key
+DELETE http://localhost:3000/api-keys/2ee59820-60f5-4f92-9730-3dd266c2d324
+Authorization: Bearer {{token}}
+
+### list api keys without a token
+GET http://localhost:3000/api-keys

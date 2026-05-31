@@ -61,6 +61,7 @@ describe("POST /authors", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "X-API-Key": "test-api-key",
             },
             body: JSON.stringify({
                 name: author.name,
@@ -82,6 +83,7 @@ describe("POST /authors", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "X-API-Key": "test-api-key",
             },
             body: JSON.stringify({
                 name: "",
@@ -89,6 +91,23 @@ describe("POST /authors", () => {
         });
 
         expect(response.status).toBe(400);
+        expect(insertMock).not.toHaveBeenCalled();
+    });
+
+    test("returns 401 when the api key is missing", async () => {
+        const response = await app.request("/authors", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: author.name,
+                birthdate: author.birthdate,
+            }),
+        });
+
+        expect(response.status).toBe(401);
+        expect(await response.json()).toEqual({ error: "Missing API Key" });
         expect(insertMock).not.toHaveBeenCalled();
     });
 });
@@ -102,6 +121,7 @@ describe("PUT /authors/:id", () => {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "X-API-Key": "test-api-key",
             },
             body: JSON.stringify({
                 name: updatedAuthor.name,
@@ -118,6 +138,7 @@ describe("PUT /authors/:id", () => {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "X-API-Key": "test-api-key",
             },
             body: JSON.stringify({
                 name: "Updated Name",
@@ -133,6 +154,7 @@ describe("PUT /authors/:id", () => {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "X-API-Key": "test-api-key",
             },
             body: JSON.stringify({
                 name: "",
@@ -142,12 +164,31 @@ describe("PUT /authors/:id", () => {
         expect(response.status).toBe(400);
         expect(updateMock).not.toHaveBeenCalled();
     });
+
+    test("returns 401 when updating without an api key", async () => {
+        const response = await app.request(`/authors/${author.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: "Updated Name",
+            }),
+        });
+
+        expect(response.status).toBe(401);
+        expect(await response.json()).toEqual({ error: "Missing API Key" });
+        expect(updateMock).not.toHaveBeenCalled();
+    });
 });
 
 describe("DELETE /authors/:id", () => {
     test("deletes an author", async () => {
         const response = await app.request(`/authors/${author.id}`, {
             method: "DELETE",
+            headers: {
+                "X-API-Key": "test-api-key",
+            },
         });
 
         expect(response.status).toBe(204);
@@ -161,9 +202,22 @@ describe("DELETE /authors/:id", () => {
 
         const response = await app.request("/authors/missing-id", {
             method: "DELETE",
+            headers: {
+                "X-API-Key": "test-api-key",
+            },
         });
 
         expect(response.status).toBe(204);
         expect(await response.text()).toBe("");
+    });
+
+    test("returns 401 when deleting without an api key", async () => {
+        const response = await app.request(`/authors/${author.id}`, {
+            method: "DELETE",
+        });
+
+        expect(response.status).toBe(401);
+        expect(await response.json()).toEqual({ error: "Missing API Key" });
+        expect(deleteMock).not.toHaveBeenCalled();
     });
 });
